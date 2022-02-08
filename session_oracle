@@ -1,0 +1,21 @@
+set linesize 200
+select s.username, s.sid, s.process, s.status, t.command_type, t.sql_text
+  from v$session s
+     , v$sqltext t
+ where t.sql_id = s.sql_id
+ order by t.sql_id, t.piece;
+ 
+ set pagesize 1000 lines 500
+col RESOURCE_NAME for 999,999,999
+col CURRENT_UTILIZATION for 999,999,999
+col MAX_UTILIZATION for 999,999,999
+col LIMIT_VALUE for 999,999,999
+select RESOURCE_NAME,CURRENT_UTILIZATION,MAX_UTILIZATION,LIMIT_VALUE 
+from v$resource_limit where resource_name = 'sessions';
+
+col RESOURCE_NAME for a15
+col CURRENT_UTILIZATION for 999,999,999
+col MAX_UTILIZATION for 999,999,999
+col LIMIT_VALUE for 999,999,999
+select RESOURCE_NAME,CURRENT_UTILIZATION,MAX_UTILIZATION,LIMIT_VALUE 
+from v$resource_limit where resource_name = 'processes';
