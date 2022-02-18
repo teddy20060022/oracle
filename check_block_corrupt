@@ -89,5 +89,22 @@ select table_owner, table_name, index_name from dba_indexes where owner='SLIK_DB
 
 
 
+==================================================================================================================
+RMAN> list failure;
+
+SQL>  select * from V$DATABASE_BLOCK_CORRUPTION;
+     FILE#       BLOCK#     BLOCKS    CORRUPTION_CHANGE# CORRUPTIO
+	---------- ---------- ---------- ------------------ ---------
+     73          2525          1                  0      FRACTURED
+
+oracle@fmsdb $ dbv file="+DATA1/spark/datafile/ts_gprs_cdr_001ind_32k.428.877783237" blocksize=32768 userid=sys/0racle
+
+SELECT tablespace_name, segment_type, owner, segment_name
+  FROM dba_extents
+WHERE file_id = 73 and 2525 between block_id AND block_id + blocks - 1;
+
+
+
+
 
 
