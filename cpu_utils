@@ -42,3 +42,11 @@ SELECT sn.INSTANCE_NUMBER,
          AND sn.snap_id = pga.snap_id
          AND sn.INSTANCE_NUMBER = pga.INSTANCE_NUMBER
 ORDER BY sn.snap_id;
+
+===========================
+CEK PGA/SGA
+===========================
+SELECT name, value
+FROM v$parameter
+WHERE name IN (‘pga_aggregate_target’, ‘sga_target’);
+
