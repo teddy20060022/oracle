@@ -2,6 +2,8 @@
 check free size tbs
 ===================================================
 select TABLESPACE_NAME,sum(MAXBYTES - bytes)/1024/1024/1024 GB from dba_data_files where AUTOEXTENSIBLE='YES' group by TABLESPACE_NAME order by 2;
+or
+select TABLESPACE_NAME,sum(MAXBYTES - bytes)/1024/1024/1024 Free_in_GB from dba_data_files where TABLESPACE_NAME='&TABLESPACE_NAME' group by TABLESPACE_NAME order by 2;
 
 ===================================================
 check size tbs
