@@ -9,7 +9,7 @@ check size tbs
 col ts_size format 999,999,999,999,999,999
 col free format 999,999,999,999
 col used format 999,999,999,999,999,999
-
+col PCT_USED for a8
 set pagesize 100
 set linesize 200
 SELECT DECODE(d.status, 'OFFLINE', d.status, d.status ) status  
