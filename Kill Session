@@ -14,3 +14,6 @@ ORDER BY machine;
 kill -9 ps -ef | grep LOCAL=NO | grep oracleOPBIBSD1  | grep -v grep | awk '{print $2}'
 
 select 'ALTER SYSTEM KILL SESSION '''||sid||','||serial#||',@'||inst_id||''' IMMEDIATE;' FROM gv$session where username in ('SKYPROD'') AND status = 'INACTIVE' ;
+
+
+kill -9 `ps -ef | grep LOCAL=NO | grep oracleETL| grep -v grep | awk '{print $2}'`
