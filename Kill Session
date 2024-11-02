@@ -31,3 +31,63 @@ select 'ALTER SYSTEM KILL SESSION '''||sid||','||serial#||',@'||inst_id||''' IMM
 
 --emcc
 https://10.226.72.18:7803/em/faces/logon/core-uifwk-console-login
+
+
+SET LINESIZE 500
+SET PAGESIZE 1000
+COLUMN username FORMAT A15
+col status for a10
+COLUMN event FORMAT A50
+COLUMN osuser FORMAT A15
+COLUMN spid FORMAT A6
+COLUMN sid FORMAT 99999
+COLUMN serial# FORMAT 99999
+COLUMN lockwait FORMAT 99999999
+COLUMN service_name FORMAT A15
+COLUMN module FORMAT A30
+COLUMN program FORMAT A30
+COLUMN machine FORMAT A35
+COLUMN logon_time FORMAT A20
+COLUMN current_sql FORMAT A55
+col last_call for a10
+col event for a32
+col inst_id for 99
+SELECT NVL(s.username, '(oracle)') AS username,
+		s.inst_id,
+	   s.osuser,
+	   to_char(s.logon_time,'dd/mm/yyyy hh24:mi:ss')   logon_time,
+	   s.sid,
+	   s.serial#,
+	   --p.spid,
+	   --s.lockwait,
+	   --s.status,
+	  s.module,
+	  --s.machine,
+	  s.program,
+	   s.event,
+	   s.sql_id,
+	   (case
+		when trunc(last_call_et)<60 then to_char(trunc(last_call_et))||' Sec(s)'
+		when trunc(last_call_et/60)<60 then to_char(trunc(last_call_et/60))||' Min(s)'
+		when trunc(last_call_et/60/60)<24 then to_char(trunc(last_call_et/60/60))||' Hour(s)'
+		when trunc(last_call_et/60/60/24)>=1  then to_char(trunc(last_call_et/60/60/24))||' Day(s)'
+		end) as last_call,
+	   SUBSTR(sa.sql_text, 1, 45) current_sql
+FROM   gv$session s,
+	   gv$process p,
+	   gv$sqlarea sa
+WHERE  s.paddr = p.addr 
+  AND s.sql_address    =  sa.address(+) 
+  AND s.sql_hash_value =  sa.hash_value(+)
+AND s.USERNAME NOT LIKE '%oracle%'
+--AND s.USERNAME ='LKPBU2'
+--and s.last_call_et > 86400
+--and s.logon_time < sysdate -1
+--and s.status='INACTIVE'
+--and osuser != 'oracle'
+--and osuser = 'cogdbaccount'
+--and s.program like '%uvsh.exe%'
+--and s.sid in (151)
+--and s.sql_id='3y6pgnk2ubw7g'
+--and s.inst_id=1
+ORDER BY s.username, s.osuser;
