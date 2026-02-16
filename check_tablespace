@@ -99,3 +99,29 @@ FROM (select tablespace_name, bytes_used bytes
 WHERE fs.tablespace_name (+) = df.tablespace_name
 GROUP BY df.tablespace_name, df.bytes, df.maxbytes
 ORDER BY 4 DESC;
+
+SELECT
+	a.tablespace_name,
+	ROUND(a.total_mb - b.free_mb, 2) AS used_space_mb,
+	ROUND(b.free_mb, 2) AS free_space_mb,
+	ROUND(a.total_mb, 2) AS total_space_mb,
+	ROUND((a.total_mb - b.free_mb) / a.total_mb * 100, 2) AS "% pct_used"
+FROM
+	(
+	SELECT
+		tablespace_name,
+		SUM(bytes) / 1024 / 1024 AS total_mb
+	FROM
+		dba_data_files
+	GROUP BY
+		tablespace_name
+	) a,
+	    (
+	SELECT
+	tablespace_name,
+	SUM(bytes) / 1024 / 1024 AS free_mb
+FROM dba_free_space
+WHERE tablespace_name='INQUIRY_RESULTS_HIST_32K_TEST'
+	GROUP BY tablespace_name
+		) b
+WHERE a.tablespace_name = b.tablespace_name;
